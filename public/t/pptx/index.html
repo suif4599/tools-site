@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pptx → pdf</title>
+<script>
+  try {
+    const t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="/ui/ak-ui.css">
+<link rel="stylesheet" href="/ui/tokens.css">
+<link rel="stylesheet" href="/ui/base.css">
+<link rel="stylesheet" href="/ui/shell.css">
+<link rel="stylesheet" href="styles.css">
+<script defer src="/ui/shell.js"></script>
+</head>
+<body>
+<tool-shell title="pptx → pdf"></tool-shell>
+<main class="page">
+  <header class="hero">
+    <p class="kicker">Conversion</p>
+    <h1 class="display">pptx → pdf</h1>
+    <p class="hero-meta">LibreOffice WASM · runs in your browser · nothing uploaded</p>
+  </header>
+
+  <section id="fontgate" class="panel tool-panel" hidden>
+    <p class="hint">Use fonts installed on this computer so text matches the deck? The browser asks for permission once.</p>
+    <div class="tool-actions">
+      <button id="usefonts" class="primary" type="button">Use local fonts</button>
+      <button id="skipfonts" class="secondary" type="button">Skip</button>
+    </div>
+  </section>
+
+  <label id="open" for="file">
+    <span class="open-kicker">Input</span>
+    <span class="open-label">Open .pptx / .ppt</span>
+    <span class="open-hint">Click to choose a file · processed locally</span>
+  </label>
+  <input id="file" type="file" accept=".pptx,.ppt">
+
+  <section id="progress" class="panel tool-panel" hidden>
+    <div id="stage" class="tool-stage"></div>
+    <div class="bar" id="bar" role="progressbar" aria-label="Conversion progress" aria-valuemin="0" aria-valuemax="100"><div id="fill"></div></div>
+    <div id="detail"></div>
+  </section>
+
+  <p id="error" class="msg" hidden></p>
+
+  <section id="result" class="panel tool-panel" hidden>
+    <div class="row">
+      <button id="download" class="primary" type="button">Download PDF</button>
+      <span id="pdfsize" class="mono"></span>
+    </div>
+    <iframe id="preview" title="PDF preview"></iframe>
+  </section>
+
+  <details id="fonts">
+    <summary>Font fallback</summary>
+    <div id="fontmap"></div>
+  </details>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

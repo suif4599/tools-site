@@ -67,7 +67,7 @@ Every tool app mounted under this hub (synced by `scripts/sync.mjs`) **must** fo
 
 1. Include, in order, `//ui/tokens.css`, `/ui/base.css`, `/ui/shell.css` (injected by sync) plus the tool's own stylesheet **after** them. The tool's own `<head>` stylesheet may keep its build-hashed URL; sync inserts the shared links before it.
 2. Render `<tool-shell title="…">` as the first element of `<body>` (injected by sync). Do not build another global topbar, and do not hide or restyle it beyond what `shell.css` provides.
-3. Tool content lives inside its own `<main class="page">` (or applies equivalent metrics): max-width 1100px, centered, same padding rhythm from `--ak-space-*`.
+3. Tool content lives inside `<main class="page">` and uses the shared page primitives from `base.css` — `.hero` + `.kicker` + `.display` + `.hero-meta` for the header, `.panel` for state blocks (font gate, progress, result), `.section-title` for sections. Do not re-create these with page-local CSS.
 4. Style every control through the shared classes in `base.css` (`button` + variants, `input`/`select`, `label`, `.msg`, `table`, `.badge`) or through `--ak-*` tokens. No hard-coded colors, spacings, radii, font sizes, or timing values in tool CSS; no new hex literals.
 5. CSP is `style-src 'self'`: external stylesheets only. No inline `style=` attributes, no JS-injected `<style>` tags, no external font/CDN requests (`font-src 'self'`).
 6. Loading states must reflect real progress (bytes, tasks, or the engine's own lifecycle); never animate a decorative counter to fake readiness. Errors use `.msg` semantics with text, not color alone.

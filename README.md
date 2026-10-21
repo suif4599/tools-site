@@ -9,6 +9,7 @@ Personal tools hub on a single Cloudflare Worker: Static Assets + R2 + D1, sessi
 - `tools.toml` — the tool registry; `scripts/build.mjs` derives `public/_headers`, `src/routes.gen.ts` and the index cards from it, and vendors the ak-ui design foundation (tokens, effects module, Oswald woff2) into `public/ui/`.
 - `scripts/sync.mjs <id>` — pull a locally built tool into `public/` (copies the app dir, injects `/ui/` references, uploads `r2/` to the bound bucket, incremental via a per-tool manifest object).
 - `docs/design.md` — the normative design language (ak-ui, system intensity, dark-first) for every page under this domain, including tool sub-apps.
+- `deploy/pptx2pdf.sh <tool-repo>` — deploy the pptx tool: verify the local nix build, copy `result/dist` into `public/t/pptx`, upload `result/r2` to the main bucket under `pptx/lo/`, then `wrangler deploy`.
 - Admin frontend lives in its own repo (`~/software/tools-admin`), synced in as the `admin` tool; it must follow `docs/design.md` — the committed `public/admin/` snapshot is restyled here only as a reference.
 
 ## Local development
@@ -56,7 +57,7 @@ curl -X POST https://<domain>/api/auth/bootstrap \
   -d '{"token":"<BOOTSTRAP_TOKEN>","username":"<username>","password":"<password>"}'
 ```
 
-6. pptx engine, local only, when the engine changes: rebuild the nix dist in `~/Documents/temp` (`LO_WASM_ARTIFACTS=... nix build --impure .#lo-wasm-dist`), then `nix develop -c node scripts/sync.mjs pptx --remote` (uploads straight from this machine to R2, incremental via manifest), commit the synced `public/t/pptx/`, and push — the cloud rebuilds and deploys only the page files.
+6. pptx, local only: rebuild the nix dist in `~/Documents/temp` (`LO_WASM_ARTIFACTS=... nix build --impure .#lo-wasm-dist`), then `nix develop -c bash deploy/pptx2pdf.sh ~/Documents/temp`. The script checks the Wrangler login, refuses a stale `result/` (missing `/ui/` links or `V = 'dev'`), copies `result/dist` into `public/t/pptx` (excluding `_headers` and `worker/`), uploads `result/r2` to `tools-site/pptx/lo/` only when the engine changed, and runs `wrangler deploy`. Commit the copied `public/t/pptx/` afterwards so the repo matches production.
 7. If the only admin ever forgets their password, reset it offline (no server endpoint exists for this): `nix develop -c node scripts/set-password.mjs <username> <new-password> --exec` (prints SQL without `--exec`; `--local` targets the dev database).
 8. Optional: Cloudflare Access with a bypass application on `/` and a protected application on `/admin` (allow only yourself).
 

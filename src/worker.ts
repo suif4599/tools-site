@@ -70,7 +70,7 @@ async function serveR2(request: Request, env: Env, key: string): Promise<Respons
   const ext = name.split('.').pop() || '';
   const headers: Record<string, string> = {
     'Content-Type': R2_MIME[ext] || 'application/octet-stream',
-    'Cache-Control': 'public, max-age=31536000, immutable',
+    'Cache-Control': 'public, max-age=31536000, immutable, no-transform',
     'Vary': 'Accept-Encoding',
     'Cross-Origin-Resource-Policy': 'same-origin',
   };
@@ -78,6 +78,8 @@ async function serveR2(request: Request, env: Env, key: string): Promise<Respons
     const br = await env.TOOLS_R2.get(key + '.br');
     if (br) {
       return new Response(br.body, {
+        // the body is already brotli; without this the runtime encodes it a second time
+        encodeBody: 'manual',
         headers: { ...headers, 'Content-Encoding': 'br', 'Content-Length': String(br.size) },
       });
     }
