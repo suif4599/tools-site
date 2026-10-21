@@ -10,18 +10,34 @@
     if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
   } catch (e) {}
 </script>
+<link rel="stylesheet" href="/ui/ak-ui.css">
 <link rel="stylesheet" href="/ui/tokens.css">
+<link rel="stylesheet" href="/ui/base.css">
+<link rel="stylesheet" href="/ui/shell.css">
 <link rel="stylesheet" href="/ui/site.css">
 <script defer src="/ui/shell.js"></script>
+<script defer src="/ui/home.js" type="module"></script>
 </head>
 <body>
-<tool-shell title=""></tool-shell>
-<main>
-  <h1>Tools</h1>
-  <p class="hint">Pick a tool to get started.</p>
-  <!-- TOOLS:START -->
-  <a class="card" href="/t/pptx/"><h2>pptx → pdf</h2><p>Convert presentations entirely in your browser</p></a>
+<tool-shell title="Index"></tool-shell>
+<main class="page">
+  <header class="hero">
+    <p class="kicker">Personal Toolkit</p>
+    <h1 class="display">Tools</h1>
+    <p class="hero-meta"><span class="mono"><span data-tools-count>—</span> Units</span> · Client-only · No upload · No tracking</p>
+  </header>
+  <section aria-label="Available tools">
+    <div class="cards">
+    <!-- TOOLS:START -->
+  <a class="card ak-command" href="/t/pptx/"><span class="ak-command__badge">01</span><span class="ak-command__watermark" aria-hidden="true">pptx</span><h2 class="ak-command__label">pptx → pdf</h2><p class="ak-command__meta">Convert presentations entirely in your browser</p></a>
   <!-- TOOLS:END -->
+    </div>
+  </section>
 </main>
+<footer class="site-foot">
+  <a href="https://github.com/suif4599/tools-site">Tools</a>
+  <span>Client-Only</span>
+  <a href="/about">About</a>
+</footer>
 </body>
 </html>

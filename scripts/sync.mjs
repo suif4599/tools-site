@@ -69,8 +69,14 @@ if (r2Dir) uploadR2();
 function injectUi(dir, t) {
   const file = join(dir, 'index.html');
   let html = readFileSync(file, 'utf8');
+  const uiLinks = [
+    '<link rel="stylesheet" href="/ui/ak-ui.css">',
+    '<link rel="stylesheet" href="/ui/tokens.css">',
+    '<link rel="stylesheet" href="/ui/base.css">',
+    '<link rel="stylesheet" href="/ui/shell.css">',
+  ].join('\n');
   if (!html.includes('/ui/tokens.css')) {
-    html = html.replace('<link rel="stylesheet"', '<link rel="stylesheet" href="/ui/tokens.css">\n<link rel="stylesheet"');
+    html = html.replace('<link rel="stylesheet"', `${uiLinks}\n<link rel="stylesheet"`);
   }
   if (!html.includes('tool-shell')) {
     const shell = `<tool-shell title="${t.title}"></tool-shell>`;

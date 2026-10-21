@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Tools</title>
+<script>
+  try {
+    const t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="/ui/ak-ui.css">
+<link rel="stylesheet" href="/ui/tokens.css">
+<link rel="stylesheet" href="/ui/base.css">
+<link rel="stylesheet" href="/ui/shell.css">
+<link rel="stylesheet" href="/ui/site.css">
+<script defer src="/ui/shell.js"></script>
+</head>
+<body>
+<tool-shell title="About"></tool-shell>
+<main class="page">
+  <header class="hero">
+    <p class="kicker">Information</p>
+    <h1 class="display">About</h1>
+    <p class="hero-meta">Site dossier · <span class="mono">TOOLS / SELF-HOSTED / CLIENT-ONLY</span></p>
+  </header>
+
+  <section class="cards" aria-label="Details">
+    <article class="info-card ak-command">
+      <span class="ak-command__badge">01</span>
+      <span class="ak-command__watermark" aria-hidden="true">Site</span>
+      <h2 class="ak-command__label">Site</h2>
+      <p class="info-body">A personal hub of small utilities. Every tool that can run entirely in the browser does run there — conversion, processing and storage happen on your device.</p>
+      <p class="ak-command__meta">SELF-HOSTED · CLOUDFLARE WORKERS</p>
+    </article>
+    <article class="info-card ak-command">
+      <span class="ak-command__badge">02</span>
+      <span class="ak-command__watermark" aria-hidden="true">Auth</span>
+      <h2 class="ak-command__label">Accounts</h2>
+      <p class="info-body">There is no sign-up. Signing in is optional and only enables cloud persistence for the tools that need it; accounts are issued manually by the site owner.</p>
+      <p class="ak-command__meta">SIGN-UP: CLOSED · NO TRACKING</p>
+    </article>
+    <article class="info-card ak-command">
+      <span class="ak-command__badge">03</span>
+      <span class="ak-command__watermark" aria-hidden="true">UI</span>
+      <h2 class="ak-command__label">Design</h2>
+      <p class="info-body">Built on the <a href="https://ak-ui.yyj.moe">ak-ui</a> design language — system intensity, dark canvas, clipped geometry. Inspired by the Arknights official website; no game assets used. Normative contract: <a href="https://github.com/suif4599/tools-site/blob/main/docs/design.md">docs/design.md</a>.</p>
+      <p class="ak-command__meta">AK-UI / SYSTEM / DARK-FIRST</p>
+    </article>
+    <article class="info-card ak-command">
+      <span class="ak-command__badge">04</span>
+      <span class="ak-command__watermark" aria-hidden="true">Src</span>
+      <h2 class="ak-command__label">Source</h2>
+      <p class="info-body">Open source under the <a href="https://github.com/suif4599/tools-site/blob/main/LICENSE">GNU GPL v3.0</a> license. The hub and the design system live in <a href="https://github.com/suif4599/tools-site">suif4599/tools-site</a>.</p>
+      <p class="ak-command__meta">GPL-3.0 · GITHUB</p>
+    </article>
+  </section>
+</main>
+<footer class="site-foot">
+  <a href="https://github.com/suif4599/tools-site">Tools</a>
+  <span>Client-Only</span>
+  <a href="/">Index</a>
+</footer>
+</body>
+</html>

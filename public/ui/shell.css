@@ -1,0 +1,112 @@
+tool-shell { display: block; }
+
+tool-shell nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--ak-space-3);
+  width: 100%;
+  height: 52px;
+  padding: 0 var(--ak-space-5);
+  background: color-mix(in srgb, var(--ak-surface-panel) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: var(--ak-line-hairline) solid color-mix(in srgb, var(--ak-text-primary) 16%, transparent);
+  font: 15px/1.5 var(--ak-font-sans);
+  color: var(--ak-text-primary);
+}
+
+tool-shell .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ak-space-2);
+  font: 600 1.02rem/1 var(--ak-font-command);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ak-text-primary);
+  text-decoration: none;
+}
+
+tool-shell .brand::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: var(--ak-signal-info);
+}
+
+tool-shell nav::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ak-signal-info) 75%, transparent), transparent 42%);
+  pointer-events: none;
+}
+
+tool-shell .title {
+  padding-left: var(--ak-space-3);
+  border-left: var(--ak-line-hairline) solid color-mix(in srgb, var(--ak-text-primary) 20%, transparent);
+  color: var(--ak-text-secondary);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+tool-shell .spacer { flex: 1; }
+
+tool-shell .user {
+  font: 500 0.8rem/1 var(--ak-font-mono);
+  letter-spacing: 0.04em;
+  color: var(--ak-text-secondary);
+}
+
+tool-shell a.signin,
+tool-shell button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--ak-space-4);
+  font: 600 0.8rem/1 var(--ak-font-sans);
+  letter-spacing: 0.04em;
+  border: 1px solid color-mix(in srgb, var(--ak-text-primary) 24%, transparent);
+  border-radius: var(--ak-radius-subtle);
+  background: transparent;
+  color: var(--ak-text-primary);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--ak-motion-fast) var(--ak-ease-standard),
+    border-color var(--ak-motion-fast) var(--ak-ease-standard),
+    color var(--ak-motion-fast) var(--ak-ease-standard);
+}
+
+tool-shell a.signin { color: var(--ak-signal-info); border-color: color-mix(in srgb, var(--ak-signal-info) 45%, transparent); }
+
+tool-shell a.signin:hover,
+tool-shell button:hover {
+  background: var(--ak-surface-muted);
+  border-color: color-mix(in srgb, var(--ak-text-primary) 40%, transparent);
+}
+
+tool-shell button.theme { width: 44px; padding: 0; }
+
+tool-shell .forbid {
+  padding: 0.22rem 0.6rem;
+  font: 500 0.72rem/1.4 var(--ak-font-mono);
+  letter-spacing: 0.05em;
+  border: 1px solid color-mix(in srgb, var(--ak-signal-danger) 50%, transparent);
+  background: color-mix(in srgb, var(--ak-signal-danger) 10%, transparent);
+  color: var(--ak-signal-danger);
+  cursor: default;
+}
+
+@media (max-width: 600px) {
+  tool-shell .title { display: none; }
+  tool-shell nav { padding: 0 var(--ak-space-4); gap: var(--ak-space-2); }
+}

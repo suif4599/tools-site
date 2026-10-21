@@ -10,19 +10,25 @@
     if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
   } catch (e) {}
 </script>
+<link rel="stylesheet" href="/ui/ak-ui.css">
 <link rel="stylesheet" href="/ui/tokens.css">
+<link rel="stylesheet" href="/ui/base.css">
+<link rel="stylesheet" href="/ui/shell.css">
 <link rel="stylesheet" href="/ui/site.css">
 <link rel="stylesheet" href="admin.css">
 <script defer src="/ui/shell.js"></script>
 </head>
 <body>
 <tool-shell title="Admin" data-session-url="api/session" data-logout-url="api/logout"></tool-shell>
-<main>
-  <h1>Admin</h1>
-  <p class="hint">Manage site accounts.</p>
+<main class="page">
+  <header class="hero">
+    <p class="kicker">Console</p>
+    <h1 class="display">Admin</h1>
+    <p class="hint">Manage site accounts.</p>
+  </header>
 
-  <form id="create">
-    <h2>Create user</h2>
+  <form id="create" class="panel admin-panel">
+    <h2 class="section-title">Create user</h2>
     <label for="new-username">Username</label>
     <input id="new-username" autocomplete="off" required>
     <label for="new-password">Password</label>
@@ -32,10 +38,10 @@
       <option value="user">user</option>
       <option value="admin">admin</option>
     </select>
-    <p><button type="submit">Create</button></p>
+    <p class="form-actions"><button type="submit" class="primary">Create</button></p>
   </form>
 
-  <h2>Users</h2>
+  <h2 class="section-title">Users</h2>
   <table>
     <thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Created</th><th></th></tr></thead>
     <tbody id="users"></tbody>

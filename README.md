@@ -6,9 +6,10 @@ Personal tools hub on a single Cloudflare Worker: Static Assets + R2 + D1, sessi
 
 - `src/` — Worker: auth (`/api/auth/*`), admin API (`/admin/api/*`), R2 serving with brotli negotiation (`/t/pptx/lo/*`); `run_worker_first` routes `/t/*`, `/api/*` and `/admin/*` through the Worker, which gates non-public tools and admin, and passes public tools through.
 - `public/` — deployed assets: `/ui/` design system, login, index, `t/<tool>/` and `admin/` app copies produced by `scripts/sync.mjs`.
-- `tools.toml` — the tool registry; `scripts/build.mjs` derives `public/_headers`, `src/routes.gen.ts` and the index cards from it.
+- `tools.toml` — the tool registry; `scripts/build.mjs` derives `public/_headers`, `src/routes.gen.ts` and the index cards from it, and vendors the ak-ui design foundation (tokens, effects module, Oswald woff2) into `public/ui/`.
 - `scripts/sync.mjs <id>` — pull a locally built tool into `public/` (copies the app dir, injects `/ui/` references, uploads `r2/` to the bound bucket, incremental via a per-tool manifest object).
-- Admin frontend lives in its own repo (`~/software/tools-admin`), synced in as the `admin` tool.
+- `docs/design.md` — the normative design language (ak-ui, system intensity, dark-first) for every page under this domain, including tool sub-apps.
+- Admin frontend lives in its own repo (`~/software/tools-admin`), synced in as the `admin` tool; it must follow `docs/design.md` — the committed `public/admin/` snapshot is restyled here only as a reference.
 
 ## Local development
 

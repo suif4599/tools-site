@@ -10,22 +10,28 @@
     if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
   } catch (e) {}
 </script>
+<link rel="stylesheet" href="/ui/ak-ui.css">
 <link rel="stylesheet" href="/ui/tokens.css">
+<link rel="stylesheet" href="/ui/base.css">
+<link rel="stylesheet" href="/ui/shell.css">
 <link rel="stylesheet" href="/ui/site.css">
 </head>
 <body>
-<main>
-  <h1>Tools</h1>
-  <p class="hint">Sign in to continue.</p>
-  <form id="form">
-    <label for="username">Username</label>
-    <input id="username" name="username" autocomplete="username" required>
-    <label for="password">Password</label>
-    <input id="password" name="password" type="password" autocomplete="current-password" required>
-    <div id="turnstile"></div>
-    <p><button id="submit" type="submit">Sign in</button></p>
-  </form>
-  <p id="error" class="msg" hidden></p>
+<main class="page page--narrow">
+  <section class="panel">
+    <p class="kicker">Auth</p>
+    <h1 class="display">Sign in</h1>
+    <p class="hint">Sign-in is optional and only enables cloud persistence for the tools that need it. There is no sign-up — accounts are issued by the site owner.</p>
+    <form id="form">
+      <label for="username">Username</label>
+      <input id="username" name="username" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <div id="turnstile"></div>
+      <p class="form-actions"><button id="submit" class="primary" type="submit">Sign in</button></p>
+    </form>
+    <p id="error" class="msg" hidden></p>
+  </section>
 </main>
 <script>
 (async () => {

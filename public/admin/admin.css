@@ -1,16 +1,5 @@
-main > form {
-  margin-top: 1.2rem;
-  padding: 1rem 1.2rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--bg-soft);
-}
+.admin-panel { margin-top: var(--ak-space-5); }
 
-main h2 {
-  font-size: 1.05rem;
-  margin: 1.4rem 0 0.2rem;
-}
+.admin-panel .form-actions button { width: auto; }
 
-main form h2 { margin-top: 0; }
-
-main form p { margin: 1rem 0 0; }
+.admin-panel .section-title { margin-top: 0; }

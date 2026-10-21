@@ -1,7 +1,19 @@
 #!/usr/bin/env node
 // Derives site artifacts from tools.toml: public/_headers, src/routes.gen.ts and the index.html tool cards.
-import { readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { parse } from 'smol-toml';
+
+function vendor(from, to) {
+  mkdirSync(to.slice(0, to.lastIndexOf('/')), { recursive: true });
+  copyFileSync(from, to);
+}
+
+vendor('node_modules/@yunyoujun/ak-ui/dist/tokens.css', 'public/ui/ak-tokens.css');
+vendor('node_modules/@yunyoujun/ak-ui/dist/ak-ui.css', 'public/ui/ak-ui.css');
+vendor('node_modules/@yunyoujun/ak-ui/src/js/effects.mjs', 'public/ui/ak-effects.mjs');
+for (const weight of [500, 600]) {
+  vendor(`node_modules/@fontsource/oswald/files/oswald-latin-${weight}-normal.woff2`, `public/ui/fonts/oswald-latin-${weight}-normal.woff2`);
+}
 
 const BASE_CSP = [
   "default-src 'self'",
@@ -38,6 +50,12 @@ const headers = [
   '  Cache-Control: no-cache',
   `  Content-Security-Policy: ${BASE_CSP}`,
   '/index.html',
+  '  Cache-Control: no-cache',
+  `  Content-Security-Policy: ${BASE_CSP}`,
+  '/about',
+  '  Cache-Control: no-cache',
+  `  Content-Security-Policy: ${BASE_CSP}`,
+  '/about.html',
   '  Cache-Control: no-cache',
   `  Content-Security-Policy: ${BASE_CSP}`,
   '/login',
@@ -77,7 +95,7 @@ writeFileSync('src/routes.gen.ts', gen);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cards = tools
   .filter((t) => !t['requires-role'])
-  .map((t) => `  <a class="card" href="${esc(t.route)}"><h2>${esc(t.title)}</h2><p>${esc(t.description || '')}</p></a>`)
+  .map((t, i) => `  <a class="card ak-command" href="${esc(t.route)}"><span class="ak-command__badge">${String(i + 1).padStart(2, '0')}</span><span class="ak-command__watermark" aria-hidden="true">${esc(t.id)}</span><h2 class="ak-command__label">${esc(t.title)}</h2><p class="ak-command__meta">${esc(t.description || '')}</p></a>`)
   .join('\n');
 const index = readFileSync('public/index.html', 'utf8');
 writeFileSync(

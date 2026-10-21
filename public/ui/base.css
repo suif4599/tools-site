@@ -1,0 +1,206 @@
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/ui/fonts/oswald-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/ui/fonts/oswald-latin-600-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ak-surface-canvas);
+  color: var(--ak-text-primary);
+  font: 15px/1.65 var(--ak-font-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--ak-signal-info) 30%, transparent);
+}
+
+h1, h2, h3 { line-height: 1.25; }
+
+a { color: var(--ak-signal-info); }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: var(--ak-focus-width) solid var(--ak-focus-color);
+  outline-offset: var(--ak-focus-offset);
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ak-space-2);
+  min-height: 44px;
+  padding: 0 var(--ak-space-5);
+  font: 600 0.92rem/1 var(--ak-font-sans);
+  letter-spacing: 0.02em;
+  border: 1px solid color-mix(in srgb, var(--ak-text-primary) 24%, transparent);
+  border-radius: var(--ak-radius-subtle);
+  background: var(--ak-surface-muted);
+  color: var(--ak-text-primary);
+  cursor: pointer;
+  transition:
+    background-color var(--ak-motion-fast) var(--ak-ease-standard),
+    border-color var(--ak-motion-fast) var(--ak-ease-standard),
+    color var(--ak-motion-fast) var(--ak-ease-standard),
+    translate var(--ak-motion-fast) var(--ak-ease-standard);
+}
+
+button:hover {
+  border-color: color-mix(in srgb, var(--ak-text-primary) 42%, transparent);
+  background: var(--ak-surface-raised);
+  translate: 0 -1px;
+}
+
+button:active { translate: 0 0; background: var(--ak-surface-muted); }
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+  translate: none;
+}
+
+button.primary {
+  background: var(--ak-signal-action);
+  border-color: transparent;
+  color: #16191d;
+}
+
+button.primary:hover { background: color-mix(in srgb, var(--ak-signal-action) 86%, white); }
+
+button.secondary {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--ak-text-primary) 24%, transparent);
+  color: var(--ak-text-primary);
+}
+
+button.secondary:hover { background: var(--ak-surface-muted); }
+
+button.danger {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--ak-signal-danger) 55%, transparent);
+  color: var(--ak-signal-danger);
+}
+
+button.danger:hover {
+  background: color-mix(in srgb, var(--ak-signal-danger) 12%, transparent);
+  border-color: var(--ak-signal-danger);
+}
+
+label {
+  display: block;
+  margin: var(--ak-space-4) 0 var(--ak-space-2);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--ak-text-secondary);
+}
+
+input, select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--ak-space-3);
+  font: inherit;
+  color: var(--ak-text-primary);
+  background: var(--ak-surface-canvas);
+  border: 1px solid color-mix(in srgb, var(--ak-text-primary) 22%, transparent);
+  border-radius: var(--ak-radius-subtle);
+}
+
+select { appearance: auto; }
+
+input:hover, select:hover { border-color: color-mix(in srgb, var(--ak-text-primary) 38%, transparent); }
+
+input:focus-visible, select:focus-visible {
+  border-color: var(--ak-signal-info);
+  outline-color: color-mix(in srgb, var(--ak-signal-info) 70%, transparent);
+}
+
+.msg {
+  margin: var(--ak-space-4) 0 0;
+  padding: var(--ak-space-3) var(--ak-space-4);
+  border: 1px solid color-mix(in srgb, var(--ak-signal-danger) 45%, transparent);
+  border-left: var(--ak-line-strong) solid var(--ak-signal-danger);
+  border-radius: var(--ak-radius-subtle);
+  background: color-mix(in srgb, var(--ak-signal-danger) 10%, var(--ak-surface-panel));
+  color: var(--ak-signal-danger);
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+}
+
+table {
+  width: 100%;
+  margin-top: var(--ak-space-4);
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+th {
+  padding: var(--ak-space-2) var(--ak-space-2);
+  border-bottom: 2px solid color-mix(in srgb, var(--ak-text-primary) 25%, transparent);
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ak-text-secondary);
+  background: color-mix(in srgb, var(--ak-surface-muted) 55%, transparent);
+}
+
+tbody tr:nth-child(even) { background: color-mix(in srgb, var(--ak-surface-muted) 28%, transparent); }
+
+td {
+  padding: var(--ak-space-2) var(--ak-space-2);
+  border-bottom: var(--ak-line-hairline) solid color-mix(in srgb, var(--ak-text-primary) 14%, transparent);
+  vertical-align: middle;
+}
+
+tbody tr:hover { background: color-mix(in srgb, var(--ak-surface-muted) 70%, transparent); }
+
+td.actions { text-align: right; white-space: nowrap; }
+
+td.actions button { min-height: 44px; padding: 0 var(--ak-space-3); margin-left: var(--ak-space-1); font-size: 0.82rem; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.5rem;
+  font: 500 0.72rem/1.4 var(--ak-font-mono);
+  letter-spacing: 0.05em;
+  color: var(--ak-text-secondary);
+  border: 1px solid color-mix(in srgb, var(--ak-text-primary) 24%, transparent);
+  background: color-mix(in srgb, var(--ak-surface-muted) 80%, transparent);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%);
+}
+
+.badge.admin {
+  color: var(--ak-signal-info);
+  border-color: color-mix(in srgb, var(--ak-signal-info) 45%, transparent);
+}
+
+.badge.off {
+  color: var(--ak-signal-danger);
+  border-color: color-mix(in srgb, var(--ak-signal-danger) 45%, transparent);
+}
+
+.mono { font-family: var(--ak-font-mono); }

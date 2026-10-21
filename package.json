@@ -10,6 +10,9 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "latest",
+    "@fontsource/oswald": "^5.3.0",
+    "@yunyoujun/ak-ui": "^1.1.0",
+    "playwright-core": "^1.64.1",
     "smol-toml": "^1.3.1",
     "typescript": "^5.7.3",
     "wrangler": "^4.42.0"
