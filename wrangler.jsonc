@@ -1,0 +1,33 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "tools-site",
+	"main": "src/worker.ts",
+	"compatibility_date": "2026-10-01",
+	"workers_dev": false,
+	"assets": {
+		"directory": "public",
+		"binding": "ASSETS",
+		"not_found_handling": "none",
+		"run_worker_first": [
+			"/t/*",
+			"/api/*",
+			"/admin/*"
+		]
+	},
+	"r2_buckets": [
+		{
+			"binding": "TOOLS_R2",
+			"bucket_name": "tools-site"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "tools-site",
+			"database_id": "8659f593-45d1-446e-9794-d30a803d3e93"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}

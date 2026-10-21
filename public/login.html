@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Tools</title>
+<script>
+  try {
+    const t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="/ui/tokens.css">
+<link rel="stylesheet" href="/ui/site.css">
+</head>
+<body>
+<main>
+  <h1>Tools</h1>
+  <p class="hint">Sign in to continue.</p>
+  <form id="form">
+    <label for="username">Username</label>
+    <input id="username" name="username" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <div id="turnstile"></div>
+    <p><button id="submit" type="submit">Sign in</button></p>
+  </form>
+  <p id="error" class="msg" hidden></p>
+</main>
+<script>
+(async () => {
+  const q = new URLSearchParams(location.search);
+  let next = q.get('next') || '/';
+  if (!next.startsWith('/') || next.startsWith('//')) next = '/';
+
+  let widgetId = null;
+  const cfg = await fetch('/api/auth/config').then((r) => r.json()).catch(() => ({ turnstileSiteKey: '' }));
+  if (cfg.turnstileSiteKey) {
+    await new Promise((resolve) => {
+      window.__tsReady = resolve;
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__tsReady&render=explicit';
+      s.onerror = resolve;
+      document.head.appendChild(s);
+    });
+    if (window.turnstile) widgetId = window.turnstile.render('#turnstile', { sitekey: cfg.turnstileSiteKey });
+  }
+
+  document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const err = document.getElementById('error');
+    const btn = document.getElementById('submit');
+    err.hidden = true;
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify({
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value,
+          turnstileToken: widgetId !== null && window.turnstile ? window.turnstile.getResponse(widgetId) : '',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        location.href = next;
+        return;
+      }
+      err.textContent = data.error || 'sign-in failed';
+      err.hidden = false;
+      if (window.turnstile && widgetId !== null) window.turnstile.reset(widgetId);
+    } catch (e2) {
+      err.textContent = String(e2);
+      err.hidden = false;
+    }
+    btn.disabled = false;
+  });
+})();
+</script>
+</body>
+</html>

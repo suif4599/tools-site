@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools</title>
+<script>
+  try {
+    const t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="/ui/tokens.css">
+<link rel="stylesheet" href="/ui/site.css">
+<script defer src="/ui/shell.js"></script>
+</head>
+<body>
+<tool-shell title=""></tool-shell>
+<main>
+  <h1>Tools</h1>
+  <p class="hint">Pick a tool to get started.</p>
+  <!-- TOOLS:START -->
+  <a class="card" href="/t/pptx/"><h2>pptx → pdf</h2><p>Convert presentations entirely in your browser</p></a>
+  <!-- TOOLS:END -->
+</main>
+</body>
+</html>

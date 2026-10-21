@@ -1,0 +1,8 @@
+# Copy to .dev.vars for local `wrangler dev` (never commit the real file).
+BOOTSTRAP_TOKEN=change-me-local
+# Turnstile keys live in the Cloudflare dashboard, never in this repo — an empty
+# entry here or in wrangler.jsonc would clobber the dashboard values on deploy.
+# Unset TURNSTILE_SECRET_KEY skips verification locally. To test the widget,
+# put real values here:
+#TURNSTILE_SECRET_KEY=real-secret
+#TURNSTILE_SITE_KEY=real-sitekey
