@@ -92,7 +92,10 @@ else
   export WRANGLER_STR="${WRANGLER[*]}"
   upload_one() {
     cd "$ROOT" || return 1
-    $WRANGLER_STR r2 object put "tools-site/pptx/lo/$1" --pipe --remote < "$R2SRC/$1" >/dev/null
+    if ! $WRANGLER_STR r2 object put "tools-site/pptx/lo/$1" --pipe --remote < "$R2SRC/$1" >/dev/null; then
+      printf '  FAILED %s\n' "$1" >&2
+      return 1
+    fi
     printf '  uploaded %s\n' "$1"
   }
   export -f upload_one

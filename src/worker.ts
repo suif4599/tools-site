@@ -34,7 +34,8 @@ function redirectToLogin(url: URL): Response {
 function csp(tool: ToolRoute | null): string {
   const parts = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline'" + (tool?.isolation ? " 'wasm-unsafe-eval'" : ''),
+    // Emscripten embind builds invokers with new Function; wasm-unsafe-eval alone is not enough
+    "script-src 'self' 'unsafe-inline'" + (tool?.isolation ? " 'unsafe-eval' 'wasm-unsafe-eval'" : ''),
     "style-src 'self'",
     "img-src 'self' data:",
     "font-src 'self'",
@@ -65,7 +66,7 @@ async function serveAsset(request: Request, env: Env, tool: ToolRoute | null): P
   return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
 }
 
-async function serveR2(request: Request, env: Env, key: string): Promise<Response> {
+async function serveR2(request: Request, env: Env, key: string, isolation = false): Promise<Response> {
   const name = key.split('/').pop() || '';
   const ext = name.split('.').pop() || '';
   const headers: Record<string, string> = {
@@ -74,6 +75,10 @@ async function serveR2(request: Request, env: Env, key: string): Promise<Respons
     'Vary': 'Accept-Encoding',
     'Cross-Origin-Resource-Policy': 'same-origin',
   };
+  if (isolation) {
+    headers['Cross-Origin-Opener-Policy'] = 'same-origin';
+    headers['Cross-Origin-Embedder-Policy'] = 'require-corp';
+  }
   if ((request.headers.get('Accept-Encoding') || '').includes('br')) {
     const br = await env.TOOLS_R2.get(key + '.br');
     if (br) {
@@ -115,7 +120,7 @@ export default {
         return handleAdminApi(request, env, user!, rest.slice('api/'.length), url);
       }
       if (tool.r2Prefix && rest.startsWith(tool.r2Prefix)) {
-        return serveR2(request, env, `${tool.id}/${rest}`);
+        return serveR2(request, env, `${tool.id}/${rest}`, tool.isolation);
       }
       return serveAsset(request, env, tool);
     }
