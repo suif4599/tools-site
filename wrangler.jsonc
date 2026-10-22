@@ -27,6 +27,9 @@
 			"database_id": "8659f593-45d1-446e-9794-d30a803d3e93"
 		}
 	],
+	"vars": {
+		"TURNSTILE_SITE_KEY": "0x4AAAAAAFezkg-b7akqaO2m"
+	},
 	"observability": {
 		"enabled": true
 	}
