@@ -35,11 +35,11 @@ function csp(tool: ToolRoute | null): string {
   const parts = [
     "default-src 'self'",
     // Emscripten embind builds invokers with new Function; wasm-unsafe-eval alone is not enough
-    "script-src 'self' 'unsafe-inline'" + (tool?.isolation ? " 'unsafe-eval' 'wasm-unsafe-eval'" : ''),
+    "script-src 'self' 'unsafe-inline'" + (tool?.isolation ? " 'unsafe-eval' 'wasm-unsafe-eval'" : '') + ' https://static.cloudflareinsights.com',
     "style-src 'self'",
     "img-src 'self' data:",
     "font-src 'self'",
-    "connect-src 'self'",
+    "connect-src 'self' https://cloudflareinsights.com",
     "object-src 'none'",
     "base-uri 'self'",
     "frame-src 'self'" + (tool?.isolation ? ' blob:' : ''),
