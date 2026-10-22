@@ -79,19 +79,31 @@ async function serveR2(request: Request, env: Env, key: string, isolation = fals
     headers['Cross-Origin-Opener-Policy'] = 'same-origin';
     headers['Cross-Origin-Embedder-Policy'] = 'require-corp';
   }
-  if ((request.headers.get('Accept-Encoding') || '').includes('br')) {
-    const br = await env.TOOLS_R2.get(key + '.br');
-    if (br) {
-      return new Response(br.body, {
-        // the body is already brotli; without this the runtime encodes it a second time
-        encodeBody: 'manual',
-        headers: { ...headers, 'Content-Encoding': 'br', 'Content-Length': String(br.size) },
-      });
-    }
+
+  const wantsBr = (request.headers.get('Accept-Encoding') || '').includes('br');
+  let objectKey = key;
+  let meta = wantsBr ? await env.TOOLS_R2.head(key + '.br') : null;
+  if (meta) objectKey = key + '.br';
+  else meta = await env.TOOLS_R2.head(key);
+  if (!meta) return json({ error: 'not found' }, 404);
+
+  const etag = meta.httpEtag;
+  if (request.headers.get('If-None-Match') === etag) {
+    return new Response(null, { status: 304, headers: { ETag: etag, 'Cache-Control': headers['Cache-Control'], Vary: 'Accept-Encoding' } });
   }
-  const obj = await env.TOOLS_R2.get(key);
+
+  const encoded = objectKey.endsWith('.br');
+  headers.ETag = etag;
+  if (encoded) {
+    headers['Content-Encoding'] = 'br';
+    headers['Content-Length'] = String(meta.size);
+  }
+  const obj = await env.TOOLS_R2.get(objectKey);
   if (!obj) return json({ error: 'not found' }, 404);
-  return new Response(obj.body, { headers });
+  const init: ResponseInit & { encodeBody?: 'manual' } = { headers };
+  // the body is already brotli; without this the runtime encodes it a second time
+  if (encoded) init.encodeBody = 'manual';
+  return new Response(obj.body, init);
 }
 
 export default {

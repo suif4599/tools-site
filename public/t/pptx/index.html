@@ -23,7 +23,7 @@
   <header class="hero">
     <p class="kicker">Conversion</p>
     <h1 class="display">pptx → pdf</h1>
-    <p class="hero-meta">LibreOffice WASM · runs in your browser · nothing uploaded</p>
+    <p class="hero-meta">Repairs formula, EMF and font breakage · PDF export in your browser · nothing uploaded</p>
   </header>
 
   <section id="fontgate" class="panel tool-panel" hidden>
@@ -40,6 +40,11 @@
     <span class="open-hint">Click to choose a file · processed locally</span>
   </label>
   <input id="file" type="file" accept=".pptx,.ppt">
+
+  <p class="engine-line">
+    <span>Engine files are cached locally · force a refresh after an update</span>
+    <button id="forceupdate" class="secondary" type="button">Force update</button>
+  </p>
 
   <section id="progress" class="panel tool-panel" hidden>
     <div id="stage" class="tool-stage"></div>
@@ -58,7 +63,7 @@
   </section>
 
   <details id="fonts">
-    <summary>Font fallback</summary>
+    <summary><span>Font fallback</span><span id="fontcount" class="fonts-meta"></span></summary>
     <div id="fontmap"></div>
   </details>
 </main>

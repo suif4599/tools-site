@@ -1,5 +1,5 @@
 const LO_BASE = new URL('lo/', document.baseURI).href;
-const V = 'fb8d895f6a55';
+const V = '6a8f8c3d80b3';
 
 const $ = (id) => document.getElementById(id);
 let loPort = null;
@@ -167,28 +167,31 @@ function buildFontPanel() {
   const saved = savedFontMap();
   const box = $('fontmap');
   box.textContent = '';
-  const opts = ['auto', CJK_FALLBACK, ''];
-  for (const c of [...SANS_CJK, ...SERIF_CJK]) {
-    if (localNames.has(c) && !opts.includes(c)) opts.push(c);
-  }
+  const count = $('fontcount');
+  if (count) count.textContent = `${FAMILY_TABLE.length} families`;
   for (const fam of FAMILY_TABLE) {
+    const target = autoTarget(fam);
+    const opts = [...new Set([target, CJK_FALLBACK, '', ...[...SANS_CJK, ...SERIF_CJK].filter((c) => localNames.has(c))])];
+    const row = document.createElement('div');
+    row.className = 'font-row';
     const label = document.createElement('label');
     label.textContent = fam;
     const sel = document.createElement('select');
     for (const opt of opts) {
       const o = document.createElement('option');
       o.value = opt;
-      o.textContent = opt === 'auto' ? 'auto' : opt || 'leave unchanged';
+      o.textContent = opt || 'leave unchanged';
       sel.appendChild(o);
     }
-    const want = fam in saved ? saved[fam] : 'auto';
-    sel.value = opts.includes(want) ? want : 'auto';
+    const want = fam in saved ? saved[fam] : target;
+    sel.value = opts.includes(want) ? want : target;
     sel.addEventListener('change', () => {
       const m = savedFontMap();
       m[fam] = sel.value;
       localStorage.setItem(FONT_STORE, JSON.stringify(m));
     });
-    box.append(label, sel);
+    row.append(label, sel);
+    box.append(row);
   }
   const rescan = document.createElement('button');
   rescan.textContent = 'Rescan local fonts';
@@ -249,9 +252,8 @@ function mb(n) {
 
 async function prefetch(url, expected, onBytes) {
   const res = await fetch(url);
-  const enc = (res.headers.get('Content-Encoding') || '') === 'br';
   const raw = expected ? expected.raw || 0 : 0;
-  const total = expected ? (enc ? expected.br : expected.raw) : (+res.headers.get('Content-Length') || 0);
+  const total = expected ? (expected.br || expected.raw) : (+res.headers.get('Content-Length') || 0);
   if (!res.body) return res.arrayBuffer();
   const parts = [];
   let got = 0;
@@ -261,7 +263,7 @@ async function prefetch(url, expected, onBytes) {
     if (done) break;
     parts.push(value);
     got += value.length;
-    onBytes(raw ? got * (total / raw) : got, total);
+    onBytes(raw ? Math.min(got, raw) * (total / raw) : got, total);
   }
   const out = new Uint8Array(got);
   let off = 0;
@@ -539,6 +541,15 @@ $('download').addEventListener('click', () => {
   a.href = URL.createObjectURL(pdfBlob);
   a.download = pdfName;
   a.click();
+});
+
+$('forceupdate').addEventListener('click', async () => {
+  const btn = $('forceupdate');
+  btn.disabled = true;
+  btn.textContent = 'Updating…';
+  const files = ['sizes.json', 'soffice.js', 'soffice.wasm', 'soffice.data', 'soffice.data.js.metadata', 'fonts/index.json'];
+  await Promise.all(files.map((f) => fetch(LO_BASE + f + '?v=' + V, { cache: 'reload' }).catch(() => {})));
+  location.reload();
 });
 
 addEventListener('unhandledrejection', (e) => fail(`boot: ${e.reason}`));
