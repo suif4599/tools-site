@@ -1,16 +1,18 @@
 # Single source of truth for aggregated tools.
+# Every tool is built locally and synced into public/ via scripts/sync.mjs; the hub build never compiles a tool.
 #   route         mount point in the hub (also the sync copy target under public/)
-#   mode          local = built on this machine and pulled in via scripts/sync.mjs
 #   artifact      default sync source (override with --from); ~ expanded
 #   r2-prefix     URL subpath under route served from R2 (files land at <id>/<prefix>)
-#   public        true = no login needed (no server-side storage involved);
-#                 absent/false = session required (storage-backed tools)
+#   public        true = page needs no login; storage APIs still require a session
+#                 absent/false = session required for the whole tool
+#   needs-wasm    allows WebAssembly compilation in the tool's CSP
+#   needs-inline-style  allows runtime inline style attributes (chart libraries); authored CSS stays external
+#   storage       enables the D1-backed tenant ledger API (apiledger sync)
 
 [[tool]]
 id = "pptx"
 title = "pptx → pdf"
 description = "Convert presentations entirely in your browser"
-mode = "local"
 artifact = "~/Documents/temp/result"
 route = "/t/pptx/"
 public = true
@@ -18,9 +20,19 @@ needs-isolation = true
 r2-prefix = "lo/"
 
 [[tool]]
+id = "apiledger"
+title = "DS Visualizer"
+description = "Import API bills and explore usage locally or synced"
+artifact = "~/software/APILedger/result-web"
+route = "/t/apiledger/"
+public = true
+needs-wasm = true
+needs-inline-style = true
+storage = true
+
+[[tool]]
 id = "admin"
 title = "Admin"
-mode = "local"
 artifact = "~/software/tools-admin/app"
 route = "/admin/"
 requires-role = "admin"

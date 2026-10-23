@@ -2,6 +2,7 @@ import type { Env } from './env';
 import { TOOLS, ToolRoute } from './routes.gen';
 import { handleAuth, getSessionUser, json } from './auth';
 import { handleAdminApi } from './admin';
+import { handleLedgerApi } from './ledger';
 
 const R2_MIME: Record<string, string> = {
   wasm: 'application/wasm',
@@ -35,7 +36,7 @@ function csp(tool: ToolRoute | null): string {
   const parts = [
     "default-src 'self'",
     // Emscripten embind builds invokers with new Function; wasm-unsafe-eval alone is not enough
-    "script-src 'self' 'unsafe-inline'" + (tool?.isolation ? " 'unsafe-eval' 'wasm-unsafe-eval'" : '') + ' https://static.cloudflareinsights.com',
+    "script-src 'self' 'unsafe-inline'" + (tool?.isolation ? " 'unsafe-eval' 'wasm-unsafe-eval'" : tool?.wasm ? " 'wasm-unsafe-eval'" : '') + ' https://static.cloudflareinsights.com',
     "style-src 'self'",
     "img-src 'self' data:",
     "font-src 'self'",
@@ -45,6 +46,7 @@ function csp(tool: ToolRoute | null): string {
     "frame-src 'self'" + (tool?.isolation ? ' blob:' : ''),
   ];
   if (tool?.isolation) parts.push("worker-src 'self' blob:");
+  if (tool?.inlineStyle) parts.push("style-src-attr 'unsafe-inline'");
   return parts.join('; ') + ';';
 }
 
@@ -128,8 +130,15 @@ export default {
         return machinePath ? json({ error: 'forbidden' }, 403) : new Response('Forbidden', { status: 403 });
       }
       if (rest.startsWith('api/')) {
-        if (tool.id !== 'admin') return json({ error: 'not found' }, 404);
-        return handleAdminApi(request, env, user!, rest.slice('api/'.length), url);
+        if (tool.id === 'admin') {
+          return handleAdminApi(request, env, user!, rest.slice('api/'.length), url);
+        }
+        if (tool.storage) {
+          const apiUser = user ?? (await getSessionUser(request, env));
+          if (!apiUser) return json({ error: 'unauthorized' }, 401);
+          return handleLedgerApi(request, env, apiUser, rest.slice('api/'.length));
+        }
+        return json({ error: 'not found' }, 404);
       }
       if (tool.r2Prefix && rest.startsWith(tool.r2Prefix)) {
         return serveR2(request, env, `${tool.id}/${rest}`, tool.isolation);

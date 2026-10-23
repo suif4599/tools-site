@@ -69,14 +69,14 @@ Every tool app mounted under this hub (synced by `scripts/sync.mjs`) **must** fo
 2. Render `<tool-shell title="…">` as the first element of `<body>` (injected by sync). Do not build another global topbar, and do not hide or restyle it beyond what `shell.css` provides.
 3. Tool content lives inside `<main class="page">` and uses the shared page primitives from `base.css` — `.hero` + `.kicker` + `.display` + `.hero-meta` for the header, `.panel` for state blocks (font gate, progress, result), `.section-title` for sections. Do not re-create these with page-local CSS.
 4. Style every control through the shared classes in `base.css` (`button` + variants, `input`/`select`, `label`, `.msg`, `table`, `.badge`) or through `--ak-*` tokens. No hard-coded colors, spacings, radii, font sizes, or timing values in tool CSS; no new hex literals.
-5. CSP is `style-src 'self'`: external stylesheets only. No inline `style=` attributes, no JS-injected `<style>` tags, no external font/CDN requests (`font-src 'self'`).
+5. CSP is `style-src 'self'`: external stylesheets only. No inline `style=` attributes, no JS-injected `<style>` tags, no external font/CDN requests (`font-src 'self'`). A tool that embeds a canvas chart library may opt into `style-src-attr 'unsafe-inline'` through `needs-inline-style` (the library writes inline positioning/tooltip styles at runtime); authored markup and CSS still must not use inline styles.
 6. Loading states must reflect real progress (bytes, tasks, or the engine's own lifecycle); never animate a decorative counter to fake readiness. Errors use `.msg` semantics with text, not color alone.
 7. Keep the signal-color semantics (cyan info / yellow primary action / red danger / green success) and use yellow for at most one primary action per view.
 8. Respect `prefers-reduced-motion`; the page must be fully usable with JavaScript disabled or failed except for the tool's core function itself.
 9. One strong geometric gesture per component: prefer at most a single clipped corner on major surfaces; buttons stay rectangular; do not clip, skew, or number every element.
 10. Do not copy or imitate game assets, logos, screenshots, or artwork. UI copy is English-only; do not introduce other languages.
 
-The pptx tool (synced from `~/Documents/temp/result`) and the admin app (source in `~/software/tools-admin`; a snapshot is committed under `public/admin/`) are both governed by this document. Restyling the committed admin snapshot here does not update the tools-admin source; adopt the same markup/classes there before its next sync.
+The pptx tool (synced from `~/Documents/temp/result`), the apiledger tool (built from `temp/apiledger` with `nix build .#web`), and the admin app (source in `~/software/tools-admin`; a snapshot is committed under `public/admin/`) are all governed by this document. Restyling the committed admin snapshot here does not update the tools-admin source; adopt the same markup/classes there before its next sync.
 
 ## Fonts
 

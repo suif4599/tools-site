@@ -7,8 +7,12 @@ export interface ToolRoute {
   requiresRole: string | null;
   isolation: boolean;
   r2Prefix: string | null;
+  wasm: boolean;
+  inlineStyle: boolean;
+  storage: boolean;
 }
 export const TOOLS: ToolRoute[] = [
-  { id: "pptx", route: "/t/pptx/", title: "pptx → pdf", public: true, requiresRole: null, isolation: true, r2Prefix: "lo/" },
-  { id: "admin", route: "/admin/", title: "Admin", public: false, requiresRole: "admin", isolation: false, r2Prefix: null },
+  { id: "pptx", route: "/t/pptx/", title: "pptx → pdf", public: true, requiresRole: null, isolation: true, r2Prefix: "lo/", wasm: false, inlineStyle: false, storage: false },
+  { id: "apiledger", route: "/t/apiledger/", title: "DS Visualizer", public: true, requiresRole: null, isolation: false, r2Prefix: null, wasm: true, inlineStyle: true, storage: true },
+  { id: "admin", route: "/admin/", title: "Admin", public: false, requiresRole: "admin", isolation: false, r2Prefix: null, wasm: false, inlineStyle: false, storage: false },
 ];

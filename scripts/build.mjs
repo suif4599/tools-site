@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Derives site artifacts from tools.toml: public/_headers, src/routes.gen.ts and the index.html tool cards.
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { parse } from 'smol-toml';
 
 function vendor(from, to) {
@@ -43,6 +44,10 @@ const tools = parse(readFileSync('tools.toml', 'utf8')).tool;
 for (const t of tools) {
   if (!/^[a-z0-9-]+$/.test(t.id)) throw new Error(`tool id must be [a-z0-9-]+: ${t.id}`);
   if (!/^\/.*\/$/.test(t.route)) throw new Error(`tool route must start and end with "/": ${t.id}`);
+  const artifact = join('public', ...t.route.split('/').filter(Boolean), 'index.html');
+  if (!existsSync(artifact)) {
+    throw new Error(`missing tool artifact ${artifact}; run: node scripts/sync.mjs ${t.id}`);
+  }
 }
 
 const headers = [
@@ -85,9 +90,12 @@ export interface ToolRoute {
   requiresRole: string | null;
   isolation: boolean;
   r2Prefix: string | null;
+  wasm: boolean;
+  inlineStyle: boolean;
+  storage: boolean;
 }
 export const TOOLS: ToolRoute[] = [
-${tools.map((t) => `  { id: ${JSON.stringify(t.id)}, route: ${JSON.stringify(t.route)}, title: ${JSON.stringify(t.title)}, public: ${!!t.public}, requiresRole: ${t['requires-role'] ? JSON.stringify(t['requires-role']) : 'null'}, isolation: ${!!t['needs-isolation']}, r2Prefix: ${t['r2-prefix'] ? JSON.stringify(t['r2-prefix']) : 'null'} },`).join('\n')}
+${tools.map((t) => `  { id: ${JSON.stringify(t.id)}, route: ${JSON.stringify(t.route)}, title: ${JSON.stringify(t.title)}, public: ${!!t.public}, requiresRole: ${t['requires-role'] ? JSON.stringify(t['requires-role']) : 'null'}, isolation: ${!!t['needs-isolation']}, r2Prefix: ${t['r2-prefix'] ? JSON.stringify(t['r2-prefix']) : 'null'}, wasm: ${!!t['needs-wasm']}, inlineStyle: ${!!t['needs-inline-style']}, storage: ${!!t.storage} },`).join('\n')}
 ];
 `;
 writeFileSync('src/routes.gen.ts', gen);

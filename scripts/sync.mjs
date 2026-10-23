@@ -3,7 +3,7 @@
 // injects /ui references, and uploads the r2/ dir to the bound bucket (incremental via manifest).
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parse } from 'smol-toml';
 
@@ -60,6 +60,7 @@ for (const entry of readdirSync(appDir)) {
   if (entry === '_headers' || entry === 'worker') continue;
   cpSync(join(appDir, entry), join(destDir, entry), { recursive: true });
 }
+normalizeModes(destDir);
 console.log(`sync: ${appDir} -> ${destDir}`);
 
 injectUi(destDir, tool);
@@ -84,6 +85,19 @@ function injectUi(dir, t) {
     html = html.replace('</head>', '  <script defer src="/ui/shell.js"></script>\n</head>');
   }
   writeFileSync(file, html);
+}
+
+// Nix store artifacts arrive read-only and may carry the executable bit.
+function normalizeModes(dir) {
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry);
+    if (statSync(full).isDirectory()) {
+      chmodSync(full, 0o755);
+      normalizeModes(full);
+    } else {
+      chmodSync(full, 0o644);
+    }
+  }
 }
 
 function sh(argv) {
