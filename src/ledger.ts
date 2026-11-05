@@ -90,6 +90,23 @@ export async function handleLedgerApi(
   user: SessionUser,
   rest: string,
 ): Promise<Response> {
+  try {
+    return await handleLedgerRequest(request, env, user, rest);
+  } catch (error) {
+    console.error('ledger sync failed', error);
+    return json(
+      { ok: false, error: error instanceof Error ? error.message : String(error) },
+      500,
+    );
+  }
+}
+
+async function handleLedgerRequest(
+  request: Request,
+  env: Env,
+  user: SessionUser,
+  rest: string,
+): Promise<Response> {
   if (rest !== 'sync') return json({ error: 'not found' }, 404);
   if (request.method !== 'POST') return json({ error: 'method not allowed' }, 405);
   if (!hasCsrfHeader(request)) return json({ error: 'forbidden' }, 403);

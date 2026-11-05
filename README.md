@@ -10,7 +10,7 @@ Personal tools hub on a single Cloudflare Worker: Static Assets + R2 + D1, sessi
 - `scripts/sync.mjs <id>` — pull a locally built tool into `public/` (copies the app dir, injects `/ui/` references, uploads `r2/` to the bound bucket, incremental via a per-tool manifest object). Every tool goes through this path; nothing is built during the hub build.
 - `docs/design.md` — the normative design language (ak-ui, system intensity, dark-first) for every page under this domain, including tool sub-apps.
 - `deploy/pptx2pdf.sh <tool-repo>` — deploy the pptx tool: verify the local nix build, copy `result/dist` into `public/t/pptx`, upload `result/r2` to the main bucket under `pptx/lo/`, then `wrangler deploy`.
-- `~/software/APILedger` — APILedger source (separate repo). `nix build .#web` produces `result-web/` (WASM + web UI), synced as the `apiledger` tool. Cloud history is stored per user in D1 (`ledger_sources`, `ledger_records`).
+- `temp/apiledger` — APILedger source (separate repo; `~/software/APILedger` is the same checkout). `nix build .#web` produces `result-web/` (WASM + web UI), synced as the `apiledger` tool. Cloud history is stored per user in D1 (`ledger_sources`, `ledger_records`).
 - Admin frontend lives in its own repo (`~/software/tools-admin`), synced in as the `admin` tool; it must follow `docs/design.md` — the committed `public/admin/` snapshot is restyled here only as a reference.
 
 ## Local development
@@ -24,7 +24,7 @@ npx wrangler d1 execute tools-site --local --file schema.sql
 npm run build
 node scripts/sync.mjs admin
 node scripts/sync.mjs pptx --local      # needs a fresh ~/Documents/temp#lo-wasm-dist build
-node scripts/sync.mjs apiledger         # needs ~/software/APILedger/result-web
+node scripts/sync.mjs apiledger         # needs temp/apiledger/result-web
 npm run dev
 ```
 
